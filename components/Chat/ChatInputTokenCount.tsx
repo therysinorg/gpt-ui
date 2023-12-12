@@ -3,8 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import HomeContext from '@/pages/api/home/home.context';
 
-import cl100k_base from '@dqbd/tiktoken/encoders/cl100k_base.json';
-import { Tiktoken } from '@dqbd/tiktoken/lite';
+import {
+  TiktokenModel,
+  getEncoding,
+  getEncodingNameForModel,
+  Tiktoken
+} from 'js-tiktoken';
+
 import BigNumber from 'bignumber.js';
 import { OpenAIModelID, OpenAIModels } from '@/types/openai';
 
@@ -23,20 +28,18 @@ export function ChatInputTokenCount(props: { content: string | undefined }) {
   const [tokenizer, setTokenizer] = useState<Tiktoken | null>(null);
 
   useEffect(() => {
-    let model: Tiktoken | null = new Tiktoken(
-      cl100k_base.bpe_ranks,
-      {
-        ...cl100k_base.special_tokens,
-        '<|im_start|>': 100264,
-        '<|im_end|>': 100265,
-        '<|im_sep|>': 100266,
-      },
-      cl100k_base.pat_str,
-    );
+    let encoding;
+    const model = selectedConversation?.model;
 
-    setTokenizer(model);
-    return () => model?.free();
-  }, []);
+    if (model) {
+      const encodingForModel = getEncodingNameForModel(model.id as TiktokenModel);
+      encoding = getEncoding(encodingForModel);
+    } else {
+      encoding = getEncoding('cl100k_base');
+    }
+
+    setTokenizer(encoding);
+  }, [selectedConversation?.model]);
 
   const messages: Array<{ role: string; content: string }> = [
     { role: 'system', content: selectedConversation?.prompt ?? '' },
