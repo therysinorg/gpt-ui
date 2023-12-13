@@ -105,8 +105,11 @@ export const OpenAIStream = async (
               const json = JSON.parse(data);
               const choice = json.choices[0];
               const usage = json.usage;
-              if ((choice && choice.finish_reason != null) || usage) {
+              if (choice && choice.finish_reason != null) {
                 controller.close();
+                return;
+              } else if (usage) {
+                // Ignore usage events
                 return;
               }
               const text = choice.delta.content;
