@@ -34,7 +34,7 @@ export const Chatbar = () => {
   });
 
   const {
-    state: { conversations, showChatbar, defaultModelId, folders, pluginKeys },
+    state: { conversations, showChatbar, defaultModelId, folders, pluginKeys, chatInputElement },
     dispatch: homeDispatch,
     handleCreateFolder,
     handleNewConversation,
@@ -135,6 +135,8 @@ export const Chatbar = () => {
 
     homeDispatch({ field: 'folders', value: updatedFolders });
     saveFolders(updatedFolders);
+
+    chatInputElement?.focus();
   };
 
   const handleDeleteConversation = (conversation: Conversation) => {

@@ -200,15 +200,18 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
             }
           }
           saveConversation(updatedConversation);
+
+          let conversationExists = false;
           const updatedConversations: Conversation[] = conversations.map(
             (conversation) => {
               if (conversation.id === selectedConversation.id) {
+                conversationExists = true;
                 return updatedConversation;
               }
               return conversation;
             },
           );
-          if (updatedConversations.length === 0) {
+          if (!conversationExists) {
             updatedConversations.push(updatedConversation);
           }
           homeDispatch({ field: 'conversations', value: updatedConversations });
@@ -348,6 +351,10 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
       }
     };
   }, [messagesEndRef]);
+
+  useEffect(() => {
+    homeDispatch({ field: 'chatInputElement', value: textareaRef.current });
+  }, [textareaRef, homeDispatch]);
 
   return (
     <div className="relative flex-1 overflow-hidden bg-white dark:bg-[#343541]">

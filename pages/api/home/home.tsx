@@ -11,12 +11,9 @@ import { useCreateReducer } from '@/hooks/useCreateReducer';
 import useErrorService from '@/services/errorService';
 import useApiService from '@/services/useApiService';
 
-import {
-  cleanConversationHistory,
-  cleanSelectedConversation,
-} from '@/utils/app/clean';
 import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from '@/utils/app/const';
 import {
+  getConversationHistory,
   saveConversation,
   saveConversations,
   updateConversation,
@@ -55,7 +52,7 @@ const Home = ({
   const { t } = useTranslation('chat');
   const { getModels } = useApiService();
   const { getModelsError } = useErrorService();
-  const [initialRender, setInitialRender] = useState<boolean>(true);
+  const isInitialRender = useRef<boolean>(true);
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
@@ -70,6 +67,7 @@ const Home = ({
       selectedConversation,
       prompts,
       temperature,
+      chatInputElement,
     },
     dispatch,
   } = contextValue;
@@ -108,6 +106,8 @@ const Home = ({
     });
 
     saveConversation(conversation);
+
+    chatInputElement?.focus();
   };
 
   // FOLDER OPERATIONS  --------------------------------------------
@@ -179,6 +179,7 @@ const Home = ({
   // CONVERSATION OPERATIONS  --------------------------------------------
 
   const handleNewConversation = () => {
+    const conversations = getConversationHistory();
     const lastConversation = conversations[conversations.length - 1];
 
     const newConversation: Conversation = {
@@ -205,6 +206,8 @@ const Home = ({
     saveConversations(updatedConversations);
 
     dispatch({ field: 'loading', value: false });
+
+    chatInputElement?.focus();
   };
 
   const handleUpdateConversation = (
@@ -247,6 +250,10 @@ const Home = ({
         value: serverSidePluginKeysSet,
       });
   }, [defaultModelId, serverSideApiKeyIsSet, serverSidePluginKeysSet]);
+
+  useEffect(() => {
+    chatInputElement?.focus();
+  }, [chatInputElement]);
 
   // ON LOAD --------------------------------------------
 
@@ -302,43 +309,12 @@ const Home = ({
       dispatch({ field: 'prompts', value: JSON.parse(prompts) });
     }
 
-    const conversationHistory = localStorage.getItem('conversationHistory');
-    if (conversationHistory) {
-      const parsedConversationHistory: Conversation[] =
-        JSON.parse(conversationHistory);
-      const cleanedConversationHistory = cleanConversationHistory(
-        parsedConversationHistory,
-      );
+    const conversations = getConversationHistory();
+    dispatch({ field: 'conversations', value: conversations });
 
-      dispatch({ field: 'conversations', value: cleanedConversationHistory });
-    }
-
-    const selectedConversation = localStorage.getItem('selectedConversation');
-    if (selectedConversation) {
-      const parsedSelectedConversation: Conversation =
-        JSON.parse(selectedConversation);
-      const cleanedSelectedConversation = cleanSelectedConversation(
-        parsedSelectedConversation,
-      );
-
-      dispatch({
-        field: 'selectedConversation',
-        value: cleanedSelectedConversation,
-      });
-    } else {
-      const lastConversation = conversations[conversations.length - 1];
-      dispatch({
-        field: 'selectedConversation',
-        value: {
-          id: uuidv4(),
-          name: t('New Conversation'),
-          messages: [],
-          model: OpenAIModels[defaultModelId],
-          prompt: DEFAULT_SYSTEM_PROMPT,
-          temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
-          folderId: null,
-        },
-      });
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      handleNewConversation();
     }
   }, [
     defaultModelId,
