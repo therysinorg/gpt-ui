@@ -27,6 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
         'Content-Type': 'application/json',
         ...(OPENAI_API_TYPE === 'openai' && {
           Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`,
+          'Cache-Control': 'no-cache',
         }),
         ...(OPENAI_API_TYPE === 'azure' && {
           'api-key': `${key ? key : process.env.OPENAI_API_KEY}`,
