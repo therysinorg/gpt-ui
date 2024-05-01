@@ -187,6 +187,11 @@ const Home = ({
     const conversations = getConversationHistory();
     const lastConversation = conversations[conversations.length - 1];
 
+    // Manually sets the model to GPT-4-turbo if the model is no longer available
+    if (lastConversation.model && OpenAIModels[lastConversation.model.id as OpenAIModelID] === undefined) {
+      lastConversation.model = OpenAIModels[OpenAIModelID.GPT_4_TURBO];
+    }
+
     const newConversation: Conversation = {
       id: uuidv4(),
       name: t('New Conversation'),
@@ -219,6 +224,11 @@ const Home = ({
     conversation: Conversation,
     data: KeyValuePair,
   ) => {
+    // Manually sets the model to GPT-4-turbo if the model is no longer available
+    if (conversation.model && OpenAIModels[conversation.model.id as OpenAIModelID] === undefined) {
+      conversation.model = OpenAIModels[OpenAIModelID.GPT_4_TURBO];
+    }
+
     const updatedConversation = {
       ...conversation,
       [data.key]: data.value,
