@@ -100,6 +100,11 @@ const Home = ({
   // FETCH MODELS ----------------------------------------------
 
   const handleSelectConversation = (conversation: Conversation) => {
+    // Manually sets the model to GPT-4-turbo if the model is no longer available
+    if (conversation.model && OpenAIModels[conversation.model.id as OpenAIModelID] === undefined) {
+      conversation.model = OpenAIModels[OpenAIModelID.GPT_4_TURBO];
+    }
+
     dispatch({
       field: 'selectedConversation',
       value: conversation,
