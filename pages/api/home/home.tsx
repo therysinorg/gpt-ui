@@ -188,7 +188,7 @@ const Home = ({
     const lastConversation = conversations[conversations.length - 1];
 
     // Manually sets the model to GPT-4-turbo if the model is no longer available
-    if (lastConversation.model && OpenAIModels[lastConversation.model.id as OpenAIModelID] === undefined) {
+    if (lastConversation && lastConversation.model && OpenAIModels[lastConversation.model.id as OpenAIModelID] === undefined) {
       lastConversation.model = OpenAIModels[OpenAIModelID.GPT_4_TURBO];
     }
 
