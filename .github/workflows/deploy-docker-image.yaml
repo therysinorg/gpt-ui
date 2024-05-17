@@ -40,5 +40,5 @@ jobs:
           context: .
           platforms: linux/arm64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/gptui:0.9
+          tags: therysino/${{ env.IMAGE_NAME }}/gptui:0.9
           
