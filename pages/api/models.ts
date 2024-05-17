@@ -68,6 +68,14 @@ const handler = async (req: Request): Promise<Response> => {
         }
       })
       .filter(Boolean);
+    
+    const gpt4o = 'gpt-4o';
+    if (!models.some(model => model.id === gpt4o)) {
+      models.push({
+        id: gpt4o,
+        name: OpenAIModels[gpt4o].name,
+      });
+    }
 
     return new Response(JSON.stringify(models), { status: 200 });
   } catch (error) {
