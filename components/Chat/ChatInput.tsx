@@ -385,21 +385,18 @@ export const ChatInput = ({
         </div>
       </div>
       <div className="px-3 pt-2 pb-3 text-center text-[12px] text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
-       <p className='text-black/80 dark:text-white/80'>
-          <strong>ATTN:</strong> gpt.shopify.io is being deprecated in favor of: <a href="https://chat.shopify.io"
+        <a
+          href="https://github.com/therysin/chatbot-ui"
           target="_blank"
-          className="underline font-bold tracking-wider dark:decoration-black/50 dark:decoration-white/50">
-          chat.shopify.io
-          </a>.
-        </p>
-        <p className='text-black/80 dark:text-white/80'>
-        Please use the new chat interface for future interactions.
-        </p>
-        <p>
+          rel="noreferrer"
+          className="underline"
+        >
+          ChatBot UI
+        </a>
+        .{' '}
         {t(
-          "Shopify-internal information ok, no PII.",
-        )}
-        </p>
+          "By therysin.",
+        )}      
       </div>
     </div>
   );
