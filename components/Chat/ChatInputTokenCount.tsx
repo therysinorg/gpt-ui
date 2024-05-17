@@ -18,6 +18,7 @@ const PRICING: Record<string, BigNumber> = {
   'gpt-4-32k': BigNumber('0.03').div(1000),
   'gpt-3.5-turbo': BigNumber('0.002').div(1000),
   'gpt-4-turbo': BigNumber('0.01').div(1000),
+  'gpt-4o': BigNumber('0.005').div(1000),
 };
 
 export function ChatInputTokenCount(props: { content: string | undefined }) {
