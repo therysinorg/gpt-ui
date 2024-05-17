@@ -11,8 +11,6 @@ export const config = {
   runtime: 'edge',
 };
 
-type ApiModel = Pick<OpenAIModel, 'id' | 'name'>;
-
 const handler = async (req: Request): Promise<Response> => {
   try {
     const { key } = (await req.json()) as {
@@ -57,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const json = await response.json();
 
-    const models: ApiModel[] = json.data
+    const models: OpenAIModel[] = json.data
       .map((model: any) => {
         const model_name = OPENAI_API_TYPE === 'azure' ? model.model : model.id;
         for (const [key, value] of Object.entries(OpenAIModelID)) {
